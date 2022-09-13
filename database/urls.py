@@ -11,4 +11,6 @@ urlpatterns = [
     path("addSub/", subscription.add_sub),
     path("getSub/", subscription.get_sub),
     path("getBusSchedule/", bus_services.get_bus_schedule),
+    path("followBus/", bus_services.follow_bus),
+    path("getBusFollowing/", bus_services.get_bus_following),
 ]
