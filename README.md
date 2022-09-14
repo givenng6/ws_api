@@ -13,7 +13,7 @@ Examples of services
 •Events - Get to see all the events that happen at Wits and plan which one you want to attend.
 
 ## Frontend
-
+https://github.com/givenng6/sdp_wits_services
 Flutter App
 
 ## Other APIs
