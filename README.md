@@ -1,4 +1,4 @@
-# Wits Services
+# Wits Services APIs
 
 ## Overview
 A general purpose app with tools and functionality that will help a lot of Wits students everyday. 
@@ -14,6 +14,7 @@ Examples of services
 
 ## Frontend
 https://github.com/givenng6/sdp_wits_services
+
 Flutter App
 
 ## Other APIs
