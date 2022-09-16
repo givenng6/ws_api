@@ -11,7 +11,7 @@ def get_dining_halls(request):
     
     dh = []
     # fetch all the list of dinings...
-    docs = db.collection('Dining').stream()
+    docs = db.collection('Dining/DiningHalls/DiningHallNames').stream()
 
     for doc in docs:
         dh.append(doc.to_dict())
