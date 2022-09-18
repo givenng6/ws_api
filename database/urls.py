@@ -17,4 +17,5 @@ urlpatterns = [
     path("getDiningHalls/", dining_services.get_dining_halls),
     path("followDiningHall/", dining_services.follow_dh),
     path("getDiningHallFollowing/", dining_services.get_dh_following),
+     path("getTime/", dining_services.getTime),
 ]

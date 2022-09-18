@@ -1,10 +1,39 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+import requests
 from authentication import firebase_key
 from firebase_admin import firestore 
 import firebase_admin
 
 db = firebase_admin.firestore.client()
+
+def getTimeAPI():
+    """
+    get current time from external api
+    """
+    response = requests.get("http://worldtimeapi.org/api/timezone/Africa/Johannesburg")
+    data = response.json()
+
+    datetime = data["datetime"].split("T")
+    temp_time = datetime[1].split(".")
+    time = temp_time[0]
+    
+    return time
+
+@api_view(["GET"])
+def getTime(request):
+
+    time = getTimeAPI()
+    hour = time.split(":")
+    meal = "Breakfast"
+
+    if(int(hour[0]) >= 9 and int(hour[0]) < 14):
+        meal = "Lunch"
+    elif(int(hour[0]) >= 14 and int(hour[0]) < 19):
+        meal = "Dinner"
+
+
+    return Response(meal);
 
 @api_view(["GET"])
 def get_dining_halls(request):
