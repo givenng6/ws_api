@@ -60,3 +60,15 @@ def get_bookings(request):
         appointments.append(doc.to_dict())
 
     return Response(appointments)
+
+@api_view(['GET'])
+def get_counsellors(request):
+    docs = db.collection('Users').where('department', u'==', 'ccdu').stream()
+
+    counsellors = []
+
+    for doc in docs:
+        counsellor = {'email': doc.to_dict()['email'], 'username': doc.to_dict()['username']}
+        counsellors.append(counsellor)
+
+    return Response(counsellors)
