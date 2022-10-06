@@ -60,6 +60,7 @@ def get_bookings(request):
         appointments.append(doc.to_dict())
 
     return Response(appointments)
+    
 
 @api_view(['GET'])
 def get_counsellors(request):
