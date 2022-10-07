@@ -31,7 +31,17 @@ def get_all_residences(request):
 
      return Response(residences)
 
+@api_view(['GET'])
+def get_all_campuses(request):
 
+    docs = db.collection('CampusControl').where('campusName', u'!=', 'null').stream()
+    campuses = []
+
+    for doc in docs:
+        campus = doc.to_dict()
+        campuses.append({"campusName": campus['campusName'], "driver": campus['driverName'], "numPlate": campus['numPlate'], "carName": campus['carName']})
+
+    return Response(campuses)
 
 
 
