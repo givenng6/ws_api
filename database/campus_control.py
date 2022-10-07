@@ -20,7 +20,7 @@ def request_ride(request):
     ref = db.collection("CampusControl").document(source)
     ref.update({'students': firestore.ArrayUnion([booking])})
 
-    return Response({})
+    return Response({True})
 
 @api_view(['GET'])
 def get_all_residences(request):
