@@ -22,6 +22,15 @@ def request_ride(request):
 
     return Response({})
 
+@api_view(['GET'])
+def get_all_residences(request):
+     ref = db.collection("CampusControl").document('Original')
+     doc = ref.get().to_dict()
+
+     residences = doc['residents']
+
+     return Response(residences)
+
 
 
 

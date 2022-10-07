@@ -24,4 +24,5 @@ urlpatterns = [
     path("getBookingCCDU/", ccdu.get_bookings),
     path("getCounsellors/", ccdu.get_counsellors),
     path("requestRide/", campus_control.request_ride),
+    path("getAllResidences/", campus_control.get_all_residences),
 ]
