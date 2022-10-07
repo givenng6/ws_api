@@ -8,6 +8,8 @@ from database import subscription
 from database import bus_services
 from database import dining_services
 from database import ccdu
+from database import campus_control
+
 urlpatterns = [
     path("addSub/", subscription.add_sub),
     path("getSub/", subscription.get_sub),
@@ -21,5 +23,5 @@ urlpatterns = [
     path("bookingCCDU/", ccdu.book_session),
     path("getBookingCCDU/", ccdu.get_bookings),
     path("getCounsellors/", ccdu.get_counsellors),
-    
+    path("requestRide/", campus_control.request_ride),
 ]
