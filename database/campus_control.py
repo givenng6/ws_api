@@ -16,9 +16,10 @@ def request_ride(request):
     to = request.data['to']
 
 
-    booking = {'email': email, 'username': username, 'from': source, 'to': to}
+    booking = {'email': email, 'username': username, 'from': source, 'to': to,'status': 'waiting'}
     ref = db.collection("CampusControl").document(source)
-    ref.update({'students': firestore.ArrayUnion([booking])})
+    student_num = email.split('@')[0]
+    ref.update({f"students.{student_num}": booking})
 
     return Response({True})
 
