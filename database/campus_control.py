@@ -28,7 +28,7 @@ def request_ride(request):
     carName = data['carName']
     reg = data['numPlate']
 
-    rideInfo = {'status': 'waiting', 'driver': driver, 'reg': reg, 'carName': carName, 'to': to, 'from': source}
+    rideInfo = {'status': 'waiting', 'driver': driver, 'reg': reg, 'carName': carName, 'to': to, 'from': source, 'completed': False}
 
     try:
         ride = db.collection("Rides").document(email)
@@ -38,6 +38,7 @@ def request_ride(request):
         ride.update({'reg': reg})
         ride.update({'to': to})
         ride.update({'from': source})
+        ride.upadate({'completed': False})
     except:
         ride = db.collection("Rides").document(email).set(rideInfo)
     
