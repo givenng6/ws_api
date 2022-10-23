@@ -83,11 +83,11 @@ def ride_status(request):
 @api_view(['POST'])
 def cancel_ride(request):
     email = request.data['email']
-    source = request.data['from']
+    # source = request.data['from']
 
-    studentNumber = email.split('@', 1)
+    # studentNumber = email.split('@', 1)
     
-    route = 'students.'+studentNumber[0]
+    # route = 'students.'+studentNumber[0]
     
     try:
         db.collection('Rides').document(email).delete()
