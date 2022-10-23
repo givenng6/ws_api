@@ -1,4 +1,5 @@
 import email
+from turtle import st
 from requests import session
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -82,9 +83,17 @@ def ride_status(request):
 @api_view(['POST'])
 def cancel_ride(request):
     email = request.data['email']
+    source = request.data['from']
+
+    studentNumber = email.split('@', 1)
+    
+    route = 'students.'+studentNumber[0]
     
     try:
         db.collection('Rides').document(email).delete()
+        db.collection('CampusControl').document(source).update({
+            route: firestore.DELETE_FIELD
+        })
         return Response({'isDeleted': True})
     except:
         return Response({'isDeleted': False})
