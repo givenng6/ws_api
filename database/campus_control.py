@@ -73,6 +73,7 @@ def ride_status(request):
     try:
         ref = db.collection("Rides").document(email)
         status = ref.get().to_dict()
+        print(len(status))
     except:
         status = {"status": "N/A"}
 
