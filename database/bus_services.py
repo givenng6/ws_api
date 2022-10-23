@@ -6,7 +6,7 @@ db = firebase_admin.firestore.client()
 
 
 @api_view(["GET"])
-def get_bus_schedule():
+def get_bus_schedule(request):
     schedule = []
     # fetch all the list of buses...
     docs = db.collection('Buses').stream()
