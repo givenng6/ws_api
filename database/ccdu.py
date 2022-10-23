@@ -18,6 +18,7 @@ def book_session(request):
     counsellor =  request.data['counsellor']
     counsellorName =  request.data['counsellorName']
     location =  request.data['location']
+    studentName = request.data['studentName']
 
     if email != '':
         id = str(uuid.uuid4())
@@ -25,12 +26,13 @@ def book_session(request):
         available = True
 
         # must set status to pending 
-        appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName, "id": id}
+        appointment = {'creator': email, 'studentName': studentName, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName, "id": id}
 
         if counsellor == '':
             # No counsellor has been selected...
             db.collection('Appointments').document(id).set(appointment)
-            return Response({available})
+            response = {'status': available, 'id': id}
+            return Response(response)
 
         doc_ref = db.collection('Users').document(counsellor)
         data = doc_ref.get().to_dict()
@@ -48,8 +50,10 @@ def book_session(request):
         if(available):
             db.collection('Appointments').document(id).set(appointment)
             doc_ref.update({'bookings': firestore.ArrayUnion([session])})
+
+        response = {'status': available, 'id': id}
             
-        return Response({available})
+        return Response(response)
 
     return Response({})
 
