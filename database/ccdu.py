@@ -5,9 +5,9 @@ from rest_framework.decorators import api_view
 from authentication import firebase_key
 from firebase_admin import firestore 
 import firebase_admin
+import uuid
 
 db = firebase_admin.firestore.client()
-
 
 @api_view(['POST'])
 def book_session(request):
@@ -20,16 +20,16 @@ def book_session(request):
     location =  request.data['location']
 
     if email != '':
-
+        id = str(uuid.uuid4())
         session = date + " " + time
         available = True
 
         # must set status to pending 
-        appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName}
+        appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName, "id": id}
 
         if counsellor == '':
             # No counsellor has been selected...
-            db.collection('Appointments').add(appointment)
+            db.collection('Appointments').document(id).set(appointment)
             return Response({available})
 
         doc_ref = db.collection('Users').document(counsellor)
@@ -46,10 +46,12 @@ def book_session(request):
                 available = False
 
         if(available):
-            db.collection('Appointments').add(appointment)
+            db.collection('Appointments').document(id).set(appointment)
             doc_ref.update({'bookings': firestore.ArrayUnion([session])})
             
         return Response({available})
+
+    return Response({})
 
     
 @api_view(['POST'])
