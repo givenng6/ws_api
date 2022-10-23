@@ -28,6 +28,8 @@ def request_ride(request):
     carName = data['carName']
     reg = data['numPlate']
 
+    rideInfo = {'status': 'waiting', 'driver': driver, 'reg': reg, 'carName': carName, 'to': to, 'from': source}
+
     try:
         ride = db.collection("Rides").document(email)
         ride.update({'status': 'waiting'})
@@ -37,11 +39,10 @@ def request_ride(request):
         ride.update({'to': to})
         ride.update({'from': source})
     except:
-        rideInfo = {'status': 'waiting', 'driver': driver, 'reg': reg, 'carName': carName, 'to': to, 'from': source}
         ride = db.collection("Rides").document(email).set(rideInfo)
     
 
-    return Response(data)
+    return Response(rideInfo)
 
 @api_view(['GET'])
 def get_all_residences(request):
@@ -54,7 +55,6 @@ def get_all_residences(request):
 
 @api_view(['GET'])
 def get_all_campuses(request):
-
     docs = db.collection('CampusControl').where('campusName', u'!=', 'null').stream()
     campuses = []
 
@@ -64,6 +64,18 @@ def get_all_campuses(request):
 
     return Response(campuses)
 
+@api_view(['POST'])
+def ride_status(request):
+    email = request.data['email']
+
+    status = {}
+    try:
+        ref = db.collection("Rides").document(email)
+        status = ref.get().to_dict()
+    except:
+        status = {"status": "N/A"}
+
+    return Response(status)
 
 
 
