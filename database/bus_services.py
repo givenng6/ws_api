@@ -1,14 +1,12 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from authentication import firebase_key
-from firebase_admin import firestore 
 import firebase_admin
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 db = firebase_admin.firestore.client()
 
+
 @api_view(["GET"])
-def get_bus_schedule(request):
-    
+def get_bus_schedule():
     schedule = []
     # fetch all the list of buses...
     docs = db.collection('Buses').stream()
@@ -18,6 +16,7 @@ def get_bus_schedule(request):
 
     return Response(schedule)
 
+
 @api_view(["POST"])
 def follow_bus(request):
     email = request.data['email']
@@ -26,10 +25,9 @@ def follow_bus(request):
     ref = db.collection("Users").document(email)
     doc = ref.get()
     user_data = doc.to_dict()['busFollowing']
-    bus_following = []
+    bus_following = [bus_id]
 
-    bus_following.append(bus_id)
-    if(len(user_data) > 0):
+    if len(user_data) > 0:
         bus_following.append(user_data[0])
 
     ref.update({'busFollowing': bus_following})
@@ -39,6 +37,7 @@ def follow_bus(request):
     # must return the new updated list
     """
     return Response(bus_following)
+
 
 @api_view(["POST"])
 def get_bus_following(request):
@@ -54,4 +53,3 @@ def get_bus_following(request):
         ref.update({'busFollowing': []})
 
     return Response(bus_following)
-    
