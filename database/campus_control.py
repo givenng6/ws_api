@@ -21,7 +21,27 @@ def request_ride(request):
     student_num = email.split('@')[0]
     ref.update({f"students.{student_num}": booking})
 
-    return Response({True})
+    doc = db.collection('CampusControl').document(source)
+    data = doc.get().to_dict()
+
+    driver = data['driverName']
+    carName = data['carName']
+    reg = data['numPlate']
+
+    try:
+        ride = db.collection("Rides").document(email)
+        ride.update({'status': 'waiting'})
+        ride.update({'driver': driver})
+        ride.update({'carName': carName})
+        ride.update({'reg': reg})
+        ride.update({'to': to})
+        ride.update({'from': source})
+    except:
+        rideInfo = {'status': 'waiting', 'driver': driver, 'reg': reg, 'carName': carName, 'to': to, 'from': source}
+        ride = db.collection("Rides").document(email).set(rideInfo)
+    
+
+    return Response(data)
 
 @api_view(['GET'])
 def get_all_residences(request):
