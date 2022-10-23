@@ -79,6 +79,12 @@ def ride_status(request):
 
     return Response(status)
 
-
-
-
+@api_view(['POST'])
+def cancel_ride(request):
+    email = request.data['email']
+    
+    try:
+        db.collection('Rides').document(email).delete()
+        return Response({'isDeleted': True})
+    except:
+        return Response({'isDeleted': False})
