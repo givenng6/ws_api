@@ -73,7 +73,7 @@ def get_bookings(request):
 
 @api_view(['GET'])
 def get_counsellors(request):
-    docs = db.collection('Users').where('department', u'==', 'ccdu').stream()
+    docs = db.collection('Users').where('department', u'==', 'CCDU').stream()
 
     counsellors = []
 
