@@ -19,36 +19,39 @@ def book_session(request):
     counsellorName =  request.data['counsellorName']
     location =  request.data['location']
 
-    session = date + " " + time
-    available = True
+    if email != '':
 
-    # must set status to pending 
-    appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName}
+        session = date + " " + time
+        available = True
 
-    if counsellor == '':
-        # No counsellor has been selected...
-        db.collection('Appointments').add(appointment)
+        # must set status to pending 
+        appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName}
+
+        if counsellor == '':
+            # No counsellor has been selected...
+            db.collection('Appointments').add(appointment)
+            return Response({available})
+
+        doc_ref = db.collection('Users').document(counsellor)
+        data = doc_ref.get().to_dict()
+
+        bookings = []
+        try:
+            bookings = data['bookings']
+        except:
+            pass
+
+        for meeting in bookings:
+            if meeting == session:
+                available = False
+
+        if(available):
+            db.collection('Appointments').add(appointment)
+            doc_ref.update({'bookings': firestore.ArrayUnion([session])})
+            
         return Response({available})
 
-    doc_ref = db.collection('Users').document(counsellor)
-    data = doc_ref.get().to_dict()
-
-    bookings = []
-    try:
-        bookings = data['bookings']
-    except:
-        pass
-
-    for meeting in bookings:
-        if meeting == session:
-            available = False
-
-    if(available):
-        db.collection('Appointments').add(appointment)
-        doc_ref.update({'bookings': firestore.ArrayUnion([session])})
-        
-    return Response({available})
-
+    
 @api_view(['POST'])
 def get_bookings(request):
     email = request.data['email']
