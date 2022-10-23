@@ -91,9 +91,9 @@ def cancel_ride(request):
     
     try:
         db.collection('Rides').document(email).delete()
-        db.collection('CampusControl').document(source).update({
-            route: firestore.DELETE_FIELD
-        })
+        # db.collection('CampusControl').document(source).update({
+        #     route: firestore.DELETE_FIELD
+        # })
         return Response({'isDeleted': True})
     except:
         return Response({'isDeleted': False})
