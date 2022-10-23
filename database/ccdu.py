@@ -5,9 +5,9 @@ from rest_framework.decorators import api_view
 from authentication import firebase_key
 from firebase_admin import firestore 
 import firebase_admin
+import uuid
 
 db = firebase_admin.firestore.client()
-
 
 @api_view(['POST'])
 def book_session(request):
@@ -18,37 +18,46 @@ def book_session(request):
     counsellor =  request.data['counsellor']
     counsellorName =  request.data['counsellorName']
     location =  request.data['location']
+    studentName = request.data['studentName']
 
-    session = date + " " + time
-    available = True
+    if email != '':
+        id = str(uuid.uuid4())
+        session = date + " " + time
+        available = True
 
-    # must set status to pending 
-    appointment = {'creator': email, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName}
+        # must set status to pending 
+        appointment = {'creator': email, 'studentName': studentName, 'status': 'Pending', 'time': time, 'date': date, 'description': description, 'counsellor': counsellor, 'location': location, 'counsellorName': counsellorName, "id": id}
 
-    if counsellor == '':
-        # No counsellor has been selected...
-        db.collection('Appointments').add(appointment)
-        return Response({available})
+        if counsellor == '':
+            # No counsellor has been selected...
+            db.collection('Appointments').document(id).set(appointment)
+            response = {'status': available, 'id': id}
+            return Response(response)
 
-    doc_ref = db.collection('Users').document(counsellor)
-    data = doc_ref.get().to_dict()
+        doc_ref = db.collection('Users').document(counsellor)
+        data = doc_ref.get().to_dict()
 
-    bookings = []
-    try:
-        bookings = data['bookings']
-    except:
-        pass
+        bookings = []
+        try:
+            bookings = data['bookings']
+        except:
+            pass
 
-    for meeting in bookings:
-        if meeting == session:
-            available = False
+        for meeting in bookings:
+            if meeting == session:
+                available = False
 
-    if(available):
-        db.collection('Appointments').add(appointment)
-        doc_ref.update({'bookings': firestore.ArrayUnion([session])})
-        
-    return Response({available})
+        if(available):
+            db.collection('Appointments').document(id).set(appointment)
+            doc_ref.update({'bookings': firestore.ArrayUnion([session])})
 
+        response = {'status': available, 'id': id}
+            
+        return Response(response)
+
+    return Response({})
+
+    
 @api_view(['POST'])
 def get_bookings(request):
     email = request.data['email']
